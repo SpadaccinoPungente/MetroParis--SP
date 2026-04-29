@@ -21,6 +21,7 @@ class View(ft.UserControl):
         self._ddStazArrivo = None
         self._ddStazPartenza = None
         self._btnCrea = None
+        self._btnCalcola = None
 
     def load_interface(self):
         # title

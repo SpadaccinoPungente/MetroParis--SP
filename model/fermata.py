@@ -7,9 +7,8 @@ class Fermata:
     coordX: int
     coordY: int
 
-
     def __hash__(self):
-        return self.id_fermata
+        return hash(self.id_fermata)
 
     def __str__(self):
         return f"{self.nome}"
