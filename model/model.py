@@ -27,10 +27,10 @@ class Model:
 
     def getDFSNodesFromEdges(self, source):
         archi = nx.dfs_edges(self._grafo, source) # lista di tuple
-        nodiBDS = []
+        nodiDFS = []
         for u, v in archi:
-            nodiBDS.append(v)
-        return nodiBDS
+            nodiDFS.append(v)
+        return nodiDFS
 
     def getDFSNodesFromTree(self, source):
         tree = nx.dfs_tree(self._grafo, source)

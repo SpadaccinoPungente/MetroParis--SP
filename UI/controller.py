@@ -8,6 +8,7 @@ class Controller:
         # the model, which implements the logic of the program and holds the data
         self._model = model
         self._fermataPartenza = None
+        self._fermataArrivo = None
 
     def handleCreaGrafo(self,e):
         self._model.buildGraph()
@@ -24,7 +25,10 @@ class Controller:
     def handleCercaRaggiungibili(self,e):
         if self._fermataPartenza is None:
             self._view.lst_result.controls.clear()
-            self._view.lst_result.controls.append(ft.Text("Attenzione non è stata fatta una scelta di stazione di partenza.", color="red"))
+            self._view.lst_result.controls.append(
+                ft.Text(
+                    "Attenzione, non è stata fatta una scelta di stazione di partenza.",
+                    color="red"))
             self._view.update_page()
             return
 
@@ -35,6 +39,7 @@ class Controller:
         for n in nodes:
             self._view.lst_result.controls.append(ft.Text(n))
         self._view.update_page()
+
 
     # Usa questo come riferimento per riempire i dd nel futuro
     def loadFermate(self, dd: ft.Dropdown()):
@@ -51,14 +56,14 @@ class Controller:
                                                      data=f,
                                                      on_click=self.read_DD_Arrivo))
 
-    def read_DD_Partenza(self, e):
+    def read_DD_Partenza(self,e):
         print("read_DD_Partenza called ")
         if e.control.data is None:
             self._fermataPartenza = None
         else:
             self._fermataPartenza = e.control.data
 
-    def read_DD_Arrivo(self, e):
+    def read_DD_Arrivo(self,e):
         print("read_DD_Arrivo called ")
         if e.control.data is None:
             self._fermataArrivo = None
