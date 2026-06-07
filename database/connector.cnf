@@ -1,6 +1,6 @@
 [client]
 user=root
-password=root
+password=rootroot
 host=127.0.0.1
 database=metroparis
 raise_on_warnings=True

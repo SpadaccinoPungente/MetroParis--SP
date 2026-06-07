@@ -16,56 +16,59 @@ class View(ft.UserControl):
         self._controller = None
         # graphical elements
         self.lst_result = None
-        self._title = None
-        self._logo = None
-        self._ddStazArrivo = None
-        self._ddStazPartenza = None
-        self._btnCrea = None
+        self.title = None
+        self.logo = None
+        self.ddStazArrivo = None
+        self.ddStazPartenza = None
+        self.btnCrea = None
+        self.btnCreaGrafoPesato = None
+        self.btnCreaMultiGrafo = None
 
     def load_interface(self):
         # title
-        self._title = ft.Text("Metro Paris", color="green", size=24)
+        self.title = ft.Text("Metro Paris", color="green", size=24)
 
         # ROW with title
         img_path = os.path.join(os.getcwd(), 'database/RATP.png')
-        self._logo = ft.Image(src=img_path,
+        self.logo = ft.Image(src=img_path,
                               width=100,
                               height=100,
                               )
 
-        row1 = ft.Row([self._title, self._logo],
+        row1 = ft.Row([self.title, self.logo],
                       alignment=ft.MainAxisAlignment.CENTER)
 
         # Row with controls
-        self._btnCrea = ft.ElevatedButton(text="Crea Grafo", on_click=self._controller.handleCreaGrafo)
-        self._ddStazPartenza = ft.Dropdown(label="Stazione di Partenza")
-        self._ddStazArrivo = ft.Dropdown(label="Stazione di Arrivo")
-        self._btnCalcola = ft.ElevatedButton(text="Calcola Raggiungibili", on_click=self._controller.handleCercaRaggiungibili)
+        self.btnCrea = ft.ElevatedButton(text="Crea Grafo", on_click=self._controller.handleCreaGrafo)
+        self.ddStazPartenza = ft.Dropdown(label="Stazione di Partenza")
+        self.ddStazArrivo = ft.Dropdown(label="Stazione di Arrivo")
+        self.btnCalcola = ft.ElevatedButton(text="Calcola Raggiungibili", on_click=self._controller.handleCercaRaggiungibili)
 
+        # Load elements in DD
+        self._controller.loadFermate(self.ddStazPartenza)
+        self._controller.loadFermate(self.ddStazArrivo)
 
-        #Load elements in DD
-        self._controller.loadFermate(self._ddStazPartenza)
-        self._controller.loadFermate(self._ddStazArrivo)
-
-
-        row2 = ft.Row([self._btnCrea,
-                       self._ddStazPartenza,
-                       self._ddStazArrivo,
-                       self._btnCalcola,
+        row2 = ft.Row([self.btnCrea,
+                       self.ddStazPartenza,
+                       self.ddStazArrivo,
+                       self.btnCalcola,
                        ], alignment=ft.MainAxisAlignment.CENTER, spacing=30)
+
+        # Additional row
+        self.btnCreaGrafoPesato = ft.ElevatedButton(text="Crea Grafo Pesato", on_click=self._controller.handleCreaGrafoPesato)
+
+        self.btnCreaMultiGrafo = ft.ElevatedButton(text="Crea Multi-Grafo", on_click=self._controller.handleCreaMultiGrafo)
+
+        row3 = ft.Row([self.btnCreaGrafoPesato, self.btnCreaMultiGrafo], alignment=ft.MainAxisAlignment.CENTER, spacing=30)
 
         # Row with listview
         self.lst_result = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=False)
 
-        self._page.add(row1, row2, self.lst_result)
-
-        self._page.update()
-
-    def set_controller(self, controller):
-        self._controller = controller
+        self._page.add(row1, row2, row3, self.lst_result)
 
     def update_page(self):
         self._page.update()
+
     @property
     def controller(self):
         return self._controller
