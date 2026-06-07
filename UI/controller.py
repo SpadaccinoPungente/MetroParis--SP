@@ -8,6 +8,9 @@ class Controller:
         self._view = view
         self._model = model
 
+        self._fermataPartenza = None
+        self._fermataArrivo = None
+
     def handleCreaGrafo(self, e):
         ti = datetime.now()
         self._model.buildGraph3()

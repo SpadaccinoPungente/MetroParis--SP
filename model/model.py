@@ -8,7 +8,7 @@ class Model:
     def __init__(self):
         self._id_map_fermate = {f.id_fermata: f for f in DAO.getAllFermate()}
         self._graph = nx.DiGraph()
-        self._multiGraph = nx.MultiGraph()
+        self._multiGraph = nx.MultiDiGraph()
 
     """
     Si sperimentino tre diverse modalità di costruzione degli archi del grafo: 
