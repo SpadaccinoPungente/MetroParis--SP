@@ -53,7 +53,7 @@ class Controller:
 
     def handleCercaRaggiungibili(self, e):
         if self._fermataPartenza is None:
-            self._view.create_alert("Selezionare stazioni di partenza e di arrivo!")
+            self._view.create_alert("Selezionare stazione di partenza!")
             return
 
         nodi_raggiungibili_bfs = self._model.getNodiRaggiungibiliBFS(self._fermataPartenza)
@@ -90,6 +90,29 @@ class Controller:
         self._view.lst_result.controls.append(
             ft.Text(f"Multi-grafo creato correttamente! {n_nodes} nodi e {n_edges} archi.", color="green")
         )
+        self._view.update_page()
+
+    def handleCreaGrafoCamminiMinimi(self, e):
+        self._model.buildGraphCamminiMinimi()
+        n_nodes, n_edges = self._model.getGraphCamminiMinimiDetails()
+        if not n_nodes:
+            self._view.lst_result.controls.append(ft.Text("Errore nella creazione del grafo.", color="red"))
+            return
+        self._view.lst_result.controls.append(
+            ft.Text(f"Grafo per i cammini minimi creato correttamente! {n_nodes} nodi e {n_edges} archi.", color="green")
+        )
+        self._view.update_page()
+
+    def handleCalcolaDijkstraPath(self, e):
+        if self._fermataPartenza is None or self._fermataArrivo is None:
+            self._view.create_alert("Selezionare stazione di partenza e di arrivo!")
+            return
+
+        tempo_totale, cammino_nodi = self._model.getDijkstraPath(self._fermataPartenza, self._fermataArrivo)
+        self._view.lst_result.controls.append(
+            ft.Text(f"Cammino ottimo trovato! Tempo di percorrenza: {tempo_totale} s attraverso i seguenti nodi:")
+        )
+        for n in cammino_nodi: self._view.lst_result.controls.append(ft.Text(n))
         self._view.update_page()
 
     def loadFermate(self, dd: ft.Dropdown()):

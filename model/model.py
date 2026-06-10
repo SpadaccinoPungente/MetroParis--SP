@@ -9,6 +9,7 @@ class Model:
         self._id_map_fermate = {f.id_fermata: f for f in DAO.getAllFermate()}
         self._graph = nx.DiGraph()
         self._multiGraph = nx.MultiDiGraph()
+        self._graphCamminiMinimi = nx.DiGraph()
 
     """
     Si sperimentino tre diverse modalità di costruzione degli archi del grafo: 
@@ -77,7 +78,7 @@ class Model:
         self._graph.clear()
         self._graph.add_nodes_from(self._id_map_fermate.values())
 
-        weighted_edges_by_id = DAO.getAllEdgesWithWeight()
+        weighted_edges_by_id = DAO.getEdgesWithWeight()
 
         weighed_edges_w_data = [
             (self._id_map_fermate[e[0]], self._id_map_fermate[e[1]], {"weight": e[2]})
@@ -92,7 +93,7 @@ class Model:
         self._multiGraph.add_nodes_from(self._id_map_fermate.values())
 
         # Recuperiamo l'elenco dal DAO con le velocità delle linee
-        connessioni_dict = DAO.getAllEdgesWithVelocity()
+        connessioni_dict = DAO.getEdgesWithVelocity()
         archi_w_data = []
 
         for c in connessioni_dict:
@@ -116,3 +117,43 @@ class Model:
 
     def getMultiGraphDetails(self):
         return self._multiGraph.number_of_nodes(), self._multiGraph.number_of_edges()
+
+    """
+    lunghezza = nx.dijkstra_path_length(G, source, target, weight='weight')
+    
+    cammino = nx.dijkstra_path(G, source, target, weight='weight')
+    
+    lunghezza, cammino = nx.single_source_dijkstra(G, source, target, weight='weight')
+    """
+
+    def buildGraphCamminiMinimi(self):
+        self._graphCamminiMinimi.clear()
+        self._graphCamminiMinimi.add_nodes_from(self._id_map_fermate.values())
+
+        archi_dict = DAO.getEdgesWithMaxVelocity()
+        archi_w_data = []
+
+        for a in archi_dict:
+            f_partenza = self._id_map_fermate.get(a['id_stazP'])
+            f_arrivo = self._id_map_fermate.get(a['id_stazA'])
+            velocita = a['vel_max']
+
+            if f_partenza and f_arrivo and velocita > 0:
+                distanza = math.sqrt(
+                    (f_arrivo.coordX - f_partenza.coordX)**2 +(f_arrivo.coordY - f_partenza.coordY)**2
+                )
+                archi_w_data.append((f_partenza, f_arrivo, {"weight": distanza / velocita}))
+
+        self._graphCamminiMinimi.add_edges_from(archi_w_data)
+
+    def getGraphCamminiMinimiDetails(self):
+        return self._graphCamminiMinimi.number_of_nodes(), self._graphCamminiMinimi.number_of_edges()
+
+    def getDijkstraPath(self, partenza, arrivo):
+        try:
+            tempo_totale, cammino_nodi = nx.single_source_dijkstra(
+                self._graphCamminiMinimi, source=partenza, target=arrivo, weight='weight'
+            )
+            return tempo_totale, cammino_nodi
+        except nx.NetworkXNoPath:
+            return None, []

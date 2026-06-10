@@ -69,7 +69,7 @@ class DAO:
         return result
 
     @staticmethod
-    def getAllEdgesWithWeight():
+    def getEdgesWithWeight():
         conn = DBConnect.get_connection()
         cursor = conn.cursor()
         query = """
@@ -84,7 +84,7 @@ class DAO:
         return result
 
     @staticmethod
-    def getAllEdgesWithVelocity():
+    def getEdgesWithVelocity():
         conn = DBConnect.get_connection()
         cursor = conn.cursor(dictionary=True)  # Usiamo dictionary per comodità di lettura
         query = """
@@ -92,6 +92,23 @@ class DAO:
                 FROM connessione c
                 JOIN linea l ON c.id_linea = l.id_linea
                 """
+        cursor.execute(query)
+        result = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return result
+
+    @staticmethod
+    def getEdgesWithMaxVelocity():
+        conn = DBConnect.get_connection()
+        cursor = conn.cursor(dictionary=True)
+        query = """
+                SELECT c.id_stazP, c.id_stazA, MAX(l.velocita) as vel_max
+                FROM connessione c
+                JOIN linea l ON c.id_linea = l.id_linea
+                GROUP BY c.id_stazP, c.id_stazA
+                """
+        # GROUP BY c.id_stazP, c.id_stazA elimina le linee duplicate e prende solo la più veloce grazie a MAX(l.velocita) as vel_max
         cursor.execute(query)
         result = cursor.fetchall()
         cursor.close()

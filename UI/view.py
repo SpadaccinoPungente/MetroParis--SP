@@ -23,6 +23,8 @@ class View(ft.UserControl):
         self.btnCrea = None
         self.btnCreaGrafoPesato = None
         self.btnCreaMultiGrafo = None
+        self.btnCreaGrafoCamminiMinimi = None
+        self.btnCalcolaDijkstraPath = None
 
     def load_interface(self):
         # title
@@ -59,7 +61,14 @@ class View(ft.UserControl):
 
         self.btnCreaMultiGrafo = ft.ElevatedButton(text="Crea Multi-Grafo", on_click=self._controller.handleCreaMultiGrafo)
 
-        row3 = ft.Row([self.btnCreaGrafoPesato, self.btnCreaMultiGrafo], alignment=ft.MainAxisAlignment.CENTER, spacing=30)
+        self.btnCreaGrafoCamminiMinimi = ft.ElevatedButton(text="Crea Grafo cammini minimi", on_click=self._controller.handleCalcolaDijkstraPath)
+
+        self.btnCalcolaDijkstraPath = ft.ElevatedButton(text="Calcola Dijkstra", on_click=self._controller.handleCreaGrafoCamminiMinimi)
+
+        row3 = ft.Row(
+            [self.btnCreaGrafoPesato, self.btnCreaMultiGrafo, self.btnCreaGrafoCamminiMinimi, self.btnCalcolaDijkstraPath],
+            alignment=ft.MainAxisAlignment.CENTER, spacing=30
+        )
 
         # Row with listview
         self.lst_result = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=False)
@@ -76,3 +85,9 @@ class View(ft.UserControl):
     @controller.setter
     def controller(self, controller):
         self._controller = controller
+
+    def create_alert(self, message):
+        dlg = ft.AlertDialog(title=ft.Text(message))
+        self._page.dialog = dlg
+        dlg.open = True
+        self._page.update()
