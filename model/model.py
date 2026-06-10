@@ -1,4 +1,4 @@
-import math
+import geopy.distance
 
 from database.DAO import DAO
 import networkx as nx
@@ -102,15 +102,8 @@ class Model:
             velocita = c['velocita']
 
             if f_partenza and f_arrivo and velocita > 0:
-                # 1. Calcolo della distanza in linea d'aria (Euclidea)
-                distanza = math.sqrt(
-                    (f_arrivo.coordX - f_partenza.coordX)**2 +(f_arrivo.coordY - f_partenza.coordY)**2
-                )
+                tempo = _calcola_tempo(f_partenza, f_arrivo, velocita)
 
-                # 2. Calcolo del tempo di percorrenza (Peso)
-                tempo = distanza / velocita
-
-                # 3. Struttura per il multigrafo pesato
                 archi_w_data.append((f_partenza, f_arrivo, {"weight": tempo}))
 
         self._multiGraph.add_edges_from(archi_w_data)
@@ -139,10 +132,8 @@ class Model:
             velocita = a['vel_max']
 
             if f_partenza and f_arrivo and velocita > 0:
-                distanza = math.sqrt(
-                    (f_arrivo.coordX - f_partenza.coordX)**2 +(f_arrivo.coordY - f_partenza.coordY)**2
-                )
-                archi_w_data.append((f_partenza, f_arrivo, {"weight": distanza / velocita}))
+                tempo = _calcola_tempo(f_partenza, f_arrivo, velocita)
+                archi_w_data.append((f_partenza, f_arrivo, {"weight": tempo}))
 
         self._graphCamminiMinimi.add_edges_from(archi_w_data)
 
@@ -157,3 +148,7 @@ class Model:
             return tempo_totale, cammino_nodi
         except nx.NetworkXNoPath:
             return None, []
+
+def _calcola_tempo(u, v, velocita):
+    dist = geopy.distance.distance((u.coordX, u.coordY), (v.coordX, v.coordY)).km
+    return dist / velocita * 60  # → minuti

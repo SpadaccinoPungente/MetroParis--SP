@@ -109,10 +109,19 @@ class Controller:
             return
 
         tempo_totale, cammino_nodi = self._model.getDijkstraPath(self._fermataPartenza, self._fermataArrivo)
+
+        if tempo_totale is None or not cammino_nodi:
+            self._view.lst_result.controls.append(
+                ft.Text(f"Nessun percorso trovato tra {self._fermataPartenza.nome} e {self._fermataArrivo.nome}.",
+                        color="red")
+            )
+            self._view.update_page()
+            return
+
         self._view.lst_result.controls.append(
-            ft.Text(f"Cammino ottimo trovato! Tempo di percorrenza: {tempo_totale} s attraverso i seguenti nodi:")
+            ft.Text(f"Cammino ottimo trovato! Tempo di percorrenza: {tempo_totale*60}' attraverso i seguenti nodi:")
         )
-        for n in cammino_nodi: self._view.lst_result.controls.append(ft.Text(n))
+        for n in cammino_nodi: self._view.lst_result.controls.append(ft.Text(f"{n}"))
         self._view.update_page()
 
     def loadFermate(self, dd: ft.Dropdown()):
