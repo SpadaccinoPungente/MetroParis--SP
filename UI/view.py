@@ -63,7 +63,7 @@ class View(ft.UserControl):
 
         self.btnCreaGrafoCamminiMinimi = ft.ElevatedButton(text="Crea Grafo cammini minimi", on_click=self._controller.handleCreaGrafoCamminiMinimi)
 
-        self.btnCalcolaDijkstraPath = ft.ElevatedButton(text="Calcola Dijkstra", on_click=self._controller.handleCalcolaDijkstraPath)
+        self.btnCalcolaDijkstraPath = ft.ElevatedButton(text="Calcola Dijkstra", on_click=self._controller.handleCalcolaDijkstraPath, disabled=True)
 
         row3 = ft.Row(
             [self.btnCreaGrafoPesato, self.btnCreaMultiGrafo, self.btnCreaGrafoCamminiMinimi, self.btnCalcolaDijkstraPath],

@@ -25,18 +25,18 @@ class Controller:
         )
         self._view.update_page()
 
-        ti = datetime.now()
-        self._model.buildGraph2()
-        n_nodes, n_edges = self._model.getGraphDetails()
-        if not n_nodes:
-            self._view.lst_result.controls.append(ft.Text("Errore nella creazione del grafo.", color="red"))
-            return
-        self._view.lst_result.controls.append(
-            ft.Text(f"Grafo creato con buildGraph2! {n_nodes} nodi e {n_edges} archi."
-                    f"\nTime elapsed: {datetime.now()-ti} s",
-                    color="green")
-        )
-        self._view.update_page()
+        # ti = datetime.now()
+        # self._model.buildGraph2()
+        # n_nodes, n_edges = self._model.getGraphDetails()
+        # if not n_nodes:
+        #     self._view.lst_result.controls.append(ft.Text("Errore nella creazione del grafo.", color="red"))
+        #     return
+        # self._view.lst_result.controls.append(
+        #     ft.Text(f"Grafo creato con buildGraph2! {n_nodes} nodi e {n_edges} archi."
+        #             f"\nTime elapsed: {datetime.now()-ti} s",
+        #             color="green")
+        # )
+        # self._view.update_page()
 
         # ti = datetime.now()
         # self._model.buildGraph1()
@@ -101,12 +101,15 @@ class Controller:
         self._view.lst_result.controls.append(
             ft.Text(f"Grafo per i cammini minimi creato correttamente! {n_nodes} nodi e {n_edges} archi.", color="green")
         )
+        self._view.btnCalcolaDijkstraPath.disabled = False
         self._view.update_page()
 
     def handleCalcolaDijkstraPath(self, e):
         if self._fermataPartenza is None or self._fermataArrivo is None:
             self._view.create_alert("Selezionare stazione di partenza e di arrivo!")
             return
+
+        self._view.lst_result.controls.clear()
 
         tempo_totale, cammino_nodi = self._model.getDijkstraPath(self._fermataPartenza, self._fermataArrivo)
 
@@ -125,7 +128,7 @@ class Controller:
         self._view.update_page()
 
     def loadFermate(self, dd: ft.Dropdown()):
-        fermate = self._model._id_map_fermate.values()
+        fermate = self._model.fermate
 
         if dd.label == "Stazione di Partenza":
             for f in fermate:

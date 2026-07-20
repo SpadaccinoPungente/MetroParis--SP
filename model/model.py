@@ -11,6 +11,10 @@ class Model:
         self._multiGraph = nx.MultiDiGraph()
         self._graphCamminiMinimi = nx.DiGraph()
 
+    @property
+    def fermate(self):
+        return self._id_map_fermate.values()
+
     """
     Si sperimentino tre diverse modalità di costruzione degli archi del grafo: 
     1. doppio loop sulle coppie di vertici, per ogni coppia fare una query per 
